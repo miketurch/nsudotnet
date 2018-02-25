@@ -12,7 +12,7 @@ namespace Turchinovich.Nsudotnet.NumberGuesser
             int requiredNumber = random.Next(101);
             //Console.WriteLine(requiredNumber);
             Console.WriteLine("{0}, начнем игру! Угадай загаданное число от 0 до 100", name);
-            string[] badWords = { ", а не Javascript'ор ли вы часом?", ", ты явно не сын маминой подруги", ", главное участие ведь, а не победа :)" };
+            string[] badWords = { ", а не Javascript'ор ли вы часом?", ", ты явно не сын маминой подруги", ", главное участие ведь, а не победа :)", ", вы и в кейсах поди участвуете?" };
             char[] allAttemps = new Char[1000];
 
             int WRONG_NUMBER = -1;
@@ -29,7 +29,8 @@ namespace Turchinovich.Nsudotnet.NumberGuesser
                 string currentLine = Console.ReadLine();
                 if (currentLine == "q")
                 {
-                    break;
+                    Console.WriteLine("Жалко, что не доиграли");
+                    Environment.Exit(0);
                 }
                 if (Int32.TryParse(currentLine, out currentVariant))
                 {
