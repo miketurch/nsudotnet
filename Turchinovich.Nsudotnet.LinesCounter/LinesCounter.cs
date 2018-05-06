@@ -44,6 +44,11 @@ namespace Turchinovich.Nsudotnet.LinesCounter
 
 	    private static bool IsRealCode(string trimmed, ref int inComment)
 	    {
+		    if (trimmed.Equals(""))
+		    {
+			    return false;
+		    }
+
 		    if (trimmed.StartsWith("/*") && trimmed.EndsWith("*/"))
 		    {
 			    return false;
