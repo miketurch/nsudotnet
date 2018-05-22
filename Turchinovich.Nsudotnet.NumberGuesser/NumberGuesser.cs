@@ -64,7 +64,7 @@ namespace Turchinovich.Nsudotnet.NumberGuesser
             {
                 Console.WriteLine("Попытка {0}: {1}", i + 1, allAttemps[i]);
             }
-            Console.WriteLine("Затрачено секунд на угадывание: {0}", totalTime.Seconds);
+            Console.WriteLine("Затрачено секунд на угадывание: {0}", totalTime.TotalSeconds);
             Console.WriteLine("===========================");
 
         }
