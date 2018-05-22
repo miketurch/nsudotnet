@@ -15,16 +15,30 @@ namespace Turchinovich.Nsudotnet.Calendar
             string date = Console.ReadLine();
             Console.BackgroundColor = ConsoleColor.Black;
             DateTime dateValue;
+
+	        String[] daysOfWeek = {
+		        "Mo",
+				"Tu",
+		        "We",
+		        "Th",
+		        "Fr",
+		        "Sa",
+		        "Su" };
+
             if (DateTime.TryParse(date, out dateValue))
             {
-                Console.WriteLine("{0} \t {1} \t {2} \t {3} \t {4} \t {5} \t {6}", 
-                    DayOfWeek.Monday.ToString().Remove(2),
-                    DayOfWeek.Thursday.ToString().Remove(2),
-                    DayOfWeek.Wednesday.ToString().Remove(2),
-                    DayOfWeek.Tuesday.ToString().Remove(2),
-                    DayOfWeek.Friday.ToString().Remove(2),
-                    DayOfWeek.Saturday.ToString().Remove(2),
-                    DayOfWeek.Sunday.ToString().Remove(2));
+				foreach (var day in daysOfWeek)
+				{
+					if (day.Equals(daysOfWeek[daysOfWeek.Length - 1]))
+					{
+						Console.WriteLine("{0}", day);
+					}
+					else
+					{
+						Console.Write("{0} \t ", day);
+					}
+				}
+
                 int currentOffset = 1 - dateValue.Day;
                 int holidays = 0;
                 while (dateValue.AddDays(currentOffset--).DayOfWeek != DayOfWeek.Monday)
