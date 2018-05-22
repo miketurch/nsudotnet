@@ -27,17 +27,7 @@ namespace Turchinovich.Nsudotnet.Calendar
 
             if (DateTime.TryParse(date, out dateValue))
             {
-				foreach (var day in daysOfWeek)
-				{
-					if (day.Equals(daysOfWeek[daysOfWeek.Length - 1]))
-					{
-						Console.WriteLine("{0}", day);
-					}
-					else
-					{
-						Console.Write("{0} \t ", day);
-					}
-				}
+				Console.WriteLine(string.Join(" \t ", daysOfWeek));
 
                 int currentOffset = 1 - dateValue.Day;
                 int holidays = 0;
