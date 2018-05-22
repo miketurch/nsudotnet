@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -15,55 +17,77 @@ namespace Turchinovich.Nsudotnet.LinesCounter
 	    public static int CountNumberOfLines(String typeOfFiles)
 	    {
 			FileInfo[] files = new DirectoryInfo(Directory.GetCurrentDirectory()).GetFiles("*." + typeOfFiles, SearchOption.AllDirectories);
-		    int totalNumberOfLines = 0;
-			Parallel.ForEach(files, currentFile =>
-		    {
-				Interlocked.Add(ref totalNumberOfLines, CountNumberOfLine(currentFile));
-		    });
-		    return totalNumberOfLines;
+		    return files.Sum(file => CountNumberOfLine(file));
 	    }
 
 	    private static int CountNumberOfLine(Object file)
 	    {
 			FileInfo currentFile = (FileInfo)file;
 		    int count = 0;
-		    int inComment = 0;
-			using (StreamReader sr = currentFile.OpenText())
+
+		    bool comment = false;
+		    bool multicomment = false;
+		    bool realCode = false;
+
+		    int currentSymbol = 0;
+
+		    using (StreamReader sr = currentFile.OpenText())
 		    {
-			    string line;
-			    while ((line = sr.ReadLine()) != null)
+			    int readedSymbol;
+				while ((readedSymbol = sr.Read()) != -1)
+				{
+					var lastSymbol = currentSymbol;
+					currentSymbol = readedSymbol;
+					if (currentSymbol.Equals(' '))
+					{
+						continue;
+					}
+					if (currentSymbol.Equals('/') && lastSymbol.Equals('/') )
+					{
+						comment = true;
+						continue;
+					}
+
+					if (currentSymbol.Equals('\n') && lastSymbol.Equals('\r'))
+					{
+						if (realCode)
+						{
+							realCode = false;
+							count++;
+						}
+
+						comment = false;
+						continue;
+					}
+					if (currentSymbol.Equals('*') && lastSymbol.Equals('/'))
+					{
+						multicomment = true;
+						continue;
+					}
+					if (currentSymbol.Equals('/') && lastSymbol.Equals('*'))
+					{
+						multicomment = false;
+						continue;
+					}
+					if (currentSymbol.Equals('/'))
+					{
+						continue;
+					}
+					if (currentSymbol.Equals('\r'))
+					{
+						continue;
+					}
+					if (!comment && !multicomment)
+					{
+						realCode = true;
+					}
+				}
+			    if (realCode)
 			    {
-				    if (IsRealCode(line.Trim(), ref inComment))
-				    {
-					    count++;
-				    }
+				    count++;
 			    }
 		    }
 		    return count;
-	    }
-
-	    private static bool IsRealCode(string trimmed, ref int inComment)
-	    {
-		    if (trimmed.Equals(""))
-		    {
-			    return false;
-		    }
-
-		    if (trimmed.StartsWith("/*") && trimmed.EndsWith("*/"))
-		    {
-			    return false;
-		    }
-		    if (trimmed.StartsWith("/*"))
-		    {
-			    inComment++;
-			    return false;
-		    }
-		    if (trimmed.EndsWith("*/"))
-		    {
-			    inComment--;
-			    return false;
-		    }
-		    return inComment == 0 && !trimmed.StartsWith("//");
 	    }
     }
 }

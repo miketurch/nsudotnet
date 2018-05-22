@@ -1,0 +1,15 @@
+Test // simple comment
+
+
+
+some text /* fdsfds
+aaa
+fff */ more text
+
+/* comment 
+*/
+
+test /* fdsfsd */ fdsfsd /*
+fdsfsd
+*/
+test
