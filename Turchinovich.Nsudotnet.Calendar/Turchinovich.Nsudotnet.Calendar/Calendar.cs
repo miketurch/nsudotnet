@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,18 +17,12 @@ namespace Turchinovich.Nsudotnet.Calendar
             Console.BackgroundColor = ConsoleColor.Black;
             DateTime dateValue;
 
-	        String[] daysOfWeek = {
-		        "Mo",
-				"Tu",
-		        "We",
-		        "Th",
-		        "Fr",
-		        "Sa",
-		        "Su" };
+			string[] daysOfWeek = CultureInfo.CurrentCulture.DateTimeFormat.DayNames;
+			daysOfWeek = daysOfWeek.Skip(1).Concat(daysOfWeek.Take(1)).ToArray();
 
             if (DateTime.TryParse(date, out dateValue))
             {
-				Console.WriteLine(string.Join(" \t ", daysOfWeek));
+				Console.WriteLine(string.Join(" \t ", daysOfWeek.Select(s => s.Substring(0, 2))));
 
                 int currentOffset = 1 - dateValue.Day;
                 int holidays = 0;
