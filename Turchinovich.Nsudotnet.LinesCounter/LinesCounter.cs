@@ -17,10 +17,15 @@ namespace Turchinovich.Nsudotnet.LinesCounter
 	    public static int CountNumberOfLines(String typeOfFiles)
 	    {
 			FileInfo[] files = new DirectoryInfo(Directory.GetCurrentDirectory()).GetFiles("*." + typeOfFiles, SearchOption.AllDirectories);
-		    return files.Sum(file => CountNumberOfLine(file));
+		    int totalNumberOfLines = 0;
+		    Parallel.ForEach(files, currentFile =>
+			{
+				Interlocked.Add(ref totalNumberOfLines, CountNumberOfLine(currentFile).Result);
+			});
+		    return totalNumberOfLines;
 	    }
 
-	    private static int CountNumberOfLine(Object file)
+	    private static async Task<int> CountNumberOfLine(Object file)
 	    {
 			FileInfo currentFile = (FileInfo)file;
 		    int count = 0;
@@ -33,9 +38,10 @@ namespace Turchinovich.Nsudotnet.LinesCounter
 
 		    using (StreamReader sr = currentFile.OpenText())
 		    {
-			    int readedSymbol;
-				while ((readedSymbol = sr.Read()) != -1)
+			    char[] buffer = new char[1];
+				while (await sr.ReadAsync(buffer, 0, 1) != 0)
 				{
+					int readedSymbol = buffer[0];
 					var lastSymbol = currentSymbol;
 					currentSymbol = readedSymbol;
 					if (currentSymbol.Equals(' '))
