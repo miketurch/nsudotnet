@@ -59,7 +59,7 @@ namespace TurchinovichZhuk.Nsudotnet.TicTacToe.Controller
 				}
 				if (result == GameState.WinGame)
 				{
-					_view.Win(_xStep);
+					_view.Win(!_xStep);
 					break;
 				}
 			}
