@@ -9,7 +9,7 @@ namespace TurchinovichZhuk.Nsudotnet.TicTacToe.Model
 		private Cell[] _cells;
 		public bool Full { get; set; }
 
-		private Winner _winner;
+		private Winner _winner = Winner.None;
 
 		public Cell[] Cells
 		{
@@ -28,32 +28,26 @@ namespace TurchinovichZhuk.Nsudotnet.TicTacToe.Model
 			_cells = cells;
 		}
 
-		public bool IsWin()
+		public bool IsWin(int cellNumber, bool xStep)
 		{
-			if (_cells[0].CellState == CellState.O && _cells[1].CellState == CellState.O && _cells[2].CellState == CellState.O 
-			    ||_cells[3].CellState == CellState.O && _cells[4].CellState == CellState.O && _cells[5].CellState == CellState.O
-				|| _cells[6].CellState == CellState.O && _cells[7].CellState == CellState.O && _cells[8].CellState == CellState.O
-				|| _cells[0].CellState == CellState.O && _cells[3].CellState == CellState.O && _cells[6].CellState == CellState.O
-				|| _cells[1].CellState == CellState.O && _cells[4].CellState == CellState.O && _cells[7].CellState == CellState.O
-				|| _cells[2].CellState == CellState.O && _cells[5].CellState == CellState.O && _cells[8].CellState == CellState.O
-				|| _cells[0].CellState == CellState.O && _cells[4].CellState == CellState.O && _cells[8].CellState == CellState.O
-				|| _cells[2].CellState == CellState.O && _cells[4].CellState == CellState.O && _cells[6].CellState == CellState.O)
+			short check = 0;
+			CellState state = (xStep) ? CellState.X : CellState.O;
+			foreach (var cell in _cells)
 			{
-				_winner = Winner.OWinner;
-				return true;
+				check = (short)(check << 1);
+				if (cell.CellState == state)
+				{
+					check |= 1;
+				}
 			}
 
-			if(_cells[0].CellState == CellState.X && _cells[1].CellState == CellState.X && _cells[2].CellState == CellState.X 
-				|| _cells[3].CellState == CellState.X && _cells[4].CellState == CellState.X && _cells[5].CellState == CellState.X
-				|| _cells[6].CellState == CellState.X && _cells[7].CellState == CellState.X && _cells[8].CellState == CellState.X
-				|| _cells[0].CellState == CellState.X && _cells[3].CellState == CellState.X && _cells[6].CellState == CellState.X
-				|| _cells[1].CellState == CellState.X && _cells[4].CellState == CellState.X && _cells[7].CellState == CellState.X
-				|| _cells[2].CellState == CellState.X && _cells[5].CellState == CellState.X && _cells[8].CellState == CellState.X
-				|| _cells[0].CellState == CellState.X && _cells[4].CellState == CellState.X && _cells[8].CellState == CellState.X
-				|| _cells[2].CellState == CellState.X && _cells[4].CellState == CellState.X && _cells[6].CellState == CellState.X)
+			for (int i = 0; i < Wins.CheckNumbers[cellNumber].Length; i++)
 			{
-				_winner = Winner.XWinner;
-				return true;
+				if ((check & Wins.CheckNumbers[cellNumber][i]) == Wins.CheckNumbers[cellNumber][i])
+				{
+					_winner = (xStep) ? Winner.XWinner : Winner.OWinner;
+					return true;
+				}
 			}
 
 			return false;

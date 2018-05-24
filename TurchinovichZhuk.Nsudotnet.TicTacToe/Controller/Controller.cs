@@ -10,7 +10,7 @@ namespace TurchinovichZhuk.Nsudotnet.TicTacToe.Controller
 
 		private bool _xStep = true;
 
-		private Winner _winner;
+		private Winner _winner = Winner.None;
 
 		private int _lastStep = -1;
 		private int _littlePoint = -1;
@@ -92,11 +92,11 @@ namespace TurchinovichZhuk.Nsudotnet.TicTacToe.Controller
 			_model.BigField.SmallFields[smallFieldNumber].Full = _model.BigField.SmallFields[smallFieldNumber].IsFull();
 
 			// Если в этом поле уже выиграли, то не надо проверять условия на победу
-			if (_model.BigField.SmallFields[smallFieldNumber].Winner.Equals(0))
+			if (_model.BigField.SmallFields[smallFieldNumber].Winner.Equals(Winner.None))
 			{
-				if (_model.BigField.SmallFields[smallFieldNumber].IsWin())
+				if (_model.BigField.SmallFields[smallFieldNumber].IsWin(cellNumber, _xStep))
 				{
-					if (IsWin())
+					if (IsWin(smallFieldNumber))
 					{
 						// Если выиграл всю игру. В поле _winner - победитель игры.
 						_littlePoint = smallFieldNumber;
@@ -122,32 +122,26 @@ namespace TurchinovichZhuk.Nsudotnet.TicTacToe.Controller
 			return GameState.Ok;
 		}
 
-		private bool IsWin()
+		private bool IsWin(int smallFieldNumber)
 		{
-			if (_model.BigField.SmallFields[0].Winner == Winner.OWinner && _model.BigField.SmallFields[1].Winner == Winner.OWinner && _model.BigField.SmallFields[2].Winner == Winner.OWinner
-				|| _model.BigField.SmallFields[3].Winner == Winner.OWinner && _model.BigField.SmallFields[4].Winner == Winner.OWinner && _model.BigField.SmallFields[5].Winner == Winner.OWinner
-				|| _model.BigField.SmallFields[6].Winner == Winner.OWinner && _model.BigField.SmallFields[7].Winner == Winner.OWinner && _model.BigField.SmallFields[8].Winner == Winner.OWinner
-				|| _model.BigField.SmallFields[0].Winner == Winner.OWinner && _model.BigField.SmallFields[3].Winner == Winner.OWinner && _model.BigField.SmallFields[6].Winner == Winner.OWinner
-				|| _model.BigField.SmallFields[1].Winner == Winner.OWinner && _model.BigField.SmallFields[4].Winner == Winner.OWinner && _model.BigField.SmallFields[7].Winner == Winner.OWinner
-				|| _model.BigField.SmallFields[2].Winner == Winner.OWinner && _model.BigField.SmallFields[5].Winner == Winner.OWinner && _model.BigField.SmallFields[8].Winner == Winner.OWinner
-				|| _model.BigField.SmallFields[0].Winner == Winner.OWinner && _model.BigField.SmallFields[4].Winner == Winner.OWinner && _model.BigField.SmallFields[8].Winner == Winner.OWinner
-				|| _model.BigField.SmallFields[2].Winner == Winner.OWinner && _model.BigField.SmallFields[4].Winner == Winner.OWinner && _model.BigField.SmallFields[6].Winner == Winner.OWinner)
+			short check = 0;
+			Winner winner = (_xStep) ? Winner.XWinner : Winner.OWinner;
+			foreach (var smallField in _model.BigField.SmallFields)
 			{
-				_winner = Winner.OWinner;
-				return true;
+				check = (short)(check << 1);
+				if (smallField.Winner == winner)
+				{
+					check |= 1;
+				}
 			}
 
-			if (_model.BigField.SmallFields[0].Winner == Winner.XWinner && _model.BigField.SmallFields[1].Winner == Winner.XWinner && _model.BigField.SmallFields[2].Winner == Winner.XWinner
-				|| _model.BigField.SmallFields[3].Winner == Winner.XWinner && _model.BigField.SmallFields[4].Winner == Winner.XWinner && _model.BigField.SmallFields[5].Winner == Winner.XWinner
-				|| _model.BigField.SmallFields[6].Winner == Winner.XWinner && _model.BigField.SmallFields[7].Winner == Winner.XWinner && _model.BigField.SmallFields[8].Winner == Winner.XWinner
-				|| _model.BigField.SmallFields[0].Winner == Winner.XWinner && _model.BigField.SmallFields[3].Winner == Winner.XWinner && _model.BigField.SmallFields[6].Winner == Winner.XWinner
-				|| _model.BigField.SmallFields[1].Winner == Winner.XWinner && _model.BigField.SmallFields[4].Winner == Winner.XWinner && _model.BigField.SmallFields[7].Winner == Winner.XWinner
-				|| _model.BigField.SmallFields[2].Winner == Winner.XWinner && _model.BigField.SmallFields[5].Winner == Winner.XWinner && _model.BigField.SmallFields[8].Winner == Winner.XWinner
-				|| _model.BigField.SmallFields[0].Winner == Winner.XWinner && _model.BigField.SmallFields[4].Winner == Winner.XWinner && _model.BigField.SmallFields[8].Winner == Winner.XWinner
-				|| _model.BigField.SmallFields[2].Winner == Winner.XWinner && _model.BigField.SmallFields[4].Winner == Winner.XWinner && _model.BigField.SmallFields[6].Winner == Winner.XWinner)
+			for (int i = 0; i < Wins.CheckNumbers[smallFieldNumber].Length; i++)
 			{
-				_winner = Winner.XWinner;
-				return true;
+				if ((check & Wins.CheckNumbers[smallFieldNumber][i]) == Wins.CheckNumbers[smallFieldNumber][i])
+				{
+					_winner = winner;
+					return true;
+				}
 			}
 
 			return false;
