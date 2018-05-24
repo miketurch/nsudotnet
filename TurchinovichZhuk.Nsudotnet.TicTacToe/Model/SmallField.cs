@@ -1,4 +1,5 @@
 ﻿using System;
+using TurchinovichZhuk.Nsudotnet.TicTacToe.Controller;
 
 
 namespace TurchinovichZhuk.Nsudotnet.TicTacToe.Model
@@ -8,9 +9,7 @@ namespace TurchinovichZhuk.Nsudotnet.TicTacToe.Model
 		private Cell[] _cells;
 		public bool Full { get; set; }
 
-		private const int XWinner = 1;
-		private const int OWinner = 2;
-		private int _winner;
+		private Winner _winner;
 
 		public Cell[] Cells
 		{
@@ -18,7 +17,7 @@ namespace TurchinovichZhuk.Nsudotnet.TicTacToe.Model
 			set { _cells = value; }
 		}
 
-		public int Winner
+		public Winner Winner
 		{
 			get { return _winner; }
 			set { _winner = value; }
@@ -40,7 +39,7 @@ namespace TurchinovichZhuk.Nsudotnet.TicTacToe.Model
 				|| _cells[0].CellState == CellState.O && _cells[4].CellState == CellState.O && _cells[8].CellState == CellState.O
 				|| _cells[2].CellState == CellState.O && _cells[4].CellState == CellState.O && _cells[6].CellState == CellState.O)
 			{
-				_winner = OWinner;
+				_winner = Winner.OWinner;
 				return true;
 			}
 
@@ -53,7 +52,7 @@ namespace TurchinovichZhuk.Nsudotnet.TicTacToe.Model
 				|| _cells[0].CellState == CellState.X && _cells[4].CellState == CellState.X && _cells[8].CellState == CellState.X
 				|| _cells[2].CellState == CellState.X && _cells[4].CellState == CellState.X && _cells[6].CellState == CellState.X)
 			{
-				_winner = XWinner;
+				_winner = Winner.XWinner;
 				return true;
 			}
 

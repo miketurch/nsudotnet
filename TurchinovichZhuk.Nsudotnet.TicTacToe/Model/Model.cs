@@ -40,12 +40,9 @@
 		{
 			for (int i = 0; i < 9; i++)
 			{
-				for (int j = 0; j < 9; j++)
+				if (!_bigField.SmallFields[i].IsFull())
 				{
-					if (!_bigField.SmallFields[i].IsFull())
-					{
-						return false;
-					}
+					return false;
 				}
 			}
 
